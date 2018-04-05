@@ -118,8 +118,8 @@ vn_free(vnode_t *vp)
 EXPORT_SYMBOL(vn_free);
 
 int
-vn_open(const char *path, uio_seg_t seg, int flags, int mode,
-	vnode_t **vpp, int x1, void *x2)
+vn_open(const char *path, uio_seg_t seg, int flags, int mode, vnode_t **vpp,
+    int x1, void *x2)
 {
 	struct file *fp;
 	struct kstat stat;
@@ -210,7 +210,7 @@ EXPORT_SYMBOL(vn_openat);
 
 int
 vn_rdwr(uio_rw_t uio, vnode_t *vp, void *addr, ssize_t len, offset_t off,
-	uio_seg_t seg, int ioflag, rlim64_t x2, void *x3, ssize_t *residp)
+    uio_seg_t seg, int ioflag, rlim64_t x2, void *x3, ssize_t *residp)
 {
 	struct file *fp = vp->v_file;
 	loff_t offset = off;
@@ -401,9 +401,8 @@ int vn_space(vnode_t *vp, int cmd, struct flock *bfp, int flag,
 		--end;
 
 		vp->v_file->f_dentry->d_inode->i_op->truncate_range(
-			vp->v_file->f_dentry->d_inode,
-			bfp->l_start, end
-		);
+		    vp->v_file->f_dentry->d_inode, bfp->l_start, end);
+
 		return (0);
 	}
 #endif
@@ -658,7 +657,7 @@ vn_file_cache_constructor(void *buf, void *cdrarg, int kmflags)
 	INIT_LIST_HEAD(&fp->f_list);
 
 	return (0);
-} /* file_cache_constructor() */
+} /* vn_file_cache_constructor() */
 
 static void
 vn_file_cache_destructor(void *buf, void *cdrarg)
@@ -680,7 +679,7 @@ spl_vn_init(void)
 	    vn_file_cache_destructor, NULL, NULL, NULL, 0);
 
 	return (0);
-} /* vn_init() */
+} /* spl_vn_init() */
 
 void
 spl_vn_fini(void)
@@ -703,4 +702,4 @@ spl_vn_fini(void)
 
 	kmem_cache_destroy(vn_file_cache);
 	kmem_cache_destroy(vn_cache);
-} /* vn_fini() */
+} /* spl_vn_fini() */
